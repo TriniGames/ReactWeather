@@ -1,17 +1,47 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+class App extends React.Component {
+  state = { lat: null, errorMessage: "" };
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+  render() {
+    if (this.state.lat && !this.state.errorMessage) {
+      return (
+        <div>
+          <p>Latitude: {this.state.lat}</p>
+        </div>
+      );
+    }
+
+    if (!this.state.lat && this.state.errorMessage) {
+      return (
+        <div>
+          <p>Error: {this.state.errorMessage}</p>
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  componentDidMount() {
+    window.navigator.geolocation.getCurrentPosition(
+      (position) => this.setState({ lat: position.coords.latitude }),
+      (err) => this.setState({ errorMessage: err.message })
+    );
+  }
+
+  componentDidUpdate() {
+    console.log("Component did update");
+  }
+
+  componentWillUnmount() {
+    console.log("Component will unmount");
+  }
+}
+
+ReactDOM.render(<App />, document.querySelector("#root"));
